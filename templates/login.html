@@ -1,0 +1,16 @@
+{%extends 'layout.html'%}
+{% block content%}
+    <section id="login" class="forms">
+        <h2>Login</h2>
+        <form action="" method="POST">
+            {{ form.hidden_tag() }}
+            {{form.student_no.label}}
+            {{form.student_no}}
+            <br/>
+            {{form.password.label}}
+            {{form.password}}
+            <br>
+            <button>{{ form.login() }}</button>
+        </form>
+    </section>
+{%endblock%}

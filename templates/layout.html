@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if tittle%}
+    <title>{{title}}</title>
+    {%else %}
+    <title>Title</title>
+    {%endif%}
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{{url_for('index')}}">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#contact">Contact</a></li>
+                {%if current_user.is_authenticated%}
+                <li><a href="{{url_for('logout')}}">Logout</a></li>
+                {%else%}
+                <li><a href="{{url_for('login')}}">Login</a></li>
+                <li><a href="{{url_for('register')}}">Register</a></li>
+                {%endif%}
+            </ul>
+        </nav>
+        <h1>Welcome to School Maintenance</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+    </header>
+    {% block content %}{% endblock %}
+    <footer id="contact">
+        <p>&copy; 2024 School Maintenance. All rights reserved.</p>
+    </footer>
+</body>
+</html>

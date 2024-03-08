@@ -1,0 +1,36 @@
+{%extends 'layout.html'%}
+{% block content%}
+  <section class="forms">
+        <form action="{{url_for('report_form')}}" method="POST" enctype="multipart/form-data">
+            <label for="campus">campus:</label>
+            <select id="campus" name="campus" required>
+                <option value="" disabled selected>Select campus</option>
+                <option value="steve">Steve biko</option>
+                <option value="ritson">Ritson</option>
+                <option value="ml">Ml sultan</option>
+                <!-- Add more issue types as needed -->
+            </select><br><br>
+
+            <label for="block">Block:</label>
+            <input type="text" name="block" id="block" size="1">
+
+             <label for="room">Room Number:</label>
+            <input type="text" name="room" id="room" >
+
+            <label for="report">Report:</label>
+            <select id="report" name="report" required>
+                <option value="" disabled selected>Report</option>
+                <option value="safety">Safety hazard</option>
+                <option value="maintenance">Maintenance</option>
+                <!-- Add more issue types as needed -->
+            </select><br><br>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" required></textarea><br><br>
+
+             <label for="damage-image">Upload Image of Damage:</label>
+            <input type="file" id="damage-image" name="damage-image" accept="image/*"><br><br>
+
+            <button type="submit">Submit Report</button>
+        </form>
+    </section>
+{%endblock%}
