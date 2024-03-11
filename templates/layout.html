@@ -7,6 +7,8 @@
     {%else %}
     <title>Title</title>
     {%endif%}
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 </head>
@@ -15,8 +17,8 @@
         <nav>
             <ul>
                 <li><a href="{{url_for('index')}}">Home</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="{{url_for('reported')}}">reported</a></li>
+                <li><a href="{{url_for('report')}}">report</a></li>
                 {%if current_user.is_authenticated%}
                 <li><a href="{{url_for('logout')}}">Logout</a></li>
                 {%else%}
@@ -26,17 +28,18 @@
             </ul>
         </nav>
         <h1>Welcome to School Maintenance</h1>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-              {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            {% endif %}
-          {% endwith %}
+
     </header>
+     <div class="container">
+    {% for message in get_flashed_messages() %}
+ <div class="alert alert-warning">
+ <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+ </div>
+    {% endfor %}
+ </div>
     {% block content %}{% endblock %}
+
     <footer id="contact">
         <p>&copy; 2024 School Maintenance. All rights reserved.</p>
     </footer>

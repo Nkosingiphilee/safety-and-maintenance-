@@ -1,7 +1,10 @@
+import datetime
+
 import flask_login
 from flask import Flask, render_template, request, redirect, flash, url_for, session
 import sqlite3
-from fileinput import filename
+from werkzeug.utils import secure_filename
+from datetime import datetime
 from flask_login import UserMixin, login_required
 
 from forms import Register, Login
@@ -29,6 +32,7 @@ with sqlite3.connect('maintenance.db') as db:
         Room_no TEXT NOT NULL,
         Report VARCHAR(50) NOT NULL,
         Description VARCHAR(50),
+        Date datetime DEFAULT utcnow,
         Image TEXT 
         )
         """)
@@ -121,13 +125,13 @@ def login():
         num = str(form.student_no.data)
         cur.execute("""SELECT * FROM register WHERE student_no=%s""" % num)
         user = cur.fetchone()
-        if user[5] == form.password.data:
+        if user is None:
+            return redirect(url_for('index'))
+        if user[1] == form.student_no.data and user[5] == form.password.data:
             Us = user_loader(user[0])
             flask_login.login_user(Us)
             flash("%s" % str(user[2]), 'successful ')
             return redirect(url_for('report'))
-        else:
-            return unauthorized_handler()
     return render_template('login.html', form=form)
 
 
@@ -158,17 +162,27 @@ def report():
 def report_form():
     if request.method == 'POST':
         image = request.files['damage-image']
-        image.save(image.filename)
+        image.save('Images/' + secure_filename(image.filename))
 
         with sqlite3.connect('maintenance.db') as db:
             cur = db.cursor()
-            cur.execute("""INSERT INTO report(campus,Block,room_no,Report,Description,Image) VALUES(?,?,?,?,?,?) 
+            cur.execute("""INSERT INTO report(campus,Block,room_no,Report,Description,Date,Image) VALUES(?,?,?,?,?,?,?) 
             """, (request.form['campus'], request.form['block'], request.form['room'], request.form['report'],
-                  request.form['description'], image.filename))
+                  request.form['description'],datetime.utcnow() ,image.filename))
             db.commit()
         flash("report submitted")
         return redirect(url_for('report'))
     return render_template('reform.html')
+
+
+@app.route('/reported')
+@login_required
+def reported():
+    with sqlite3.connect('maintenance.db') as db:
+        cur = db.cursor()
+        cur.execute("""SELECT * FROM report""")
+    reports = cur.fetchall()
+    return render_template('reported.html', reports=reports)
 
 
 if __name__ == '__main__':
