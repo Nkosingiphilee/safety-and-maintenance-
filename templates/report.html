@@ -1,22 +1,9 @@
 {%extends 'layout.html'%}
 {% block content%}
+<h2>Hey  {{current_user.name}}</h2>
 <h1> Welcome to DUT Safety and Maintenance </h1>
-<button>
+<button class="btn-warning">
 <a href="{{url_for('report_form')}}">get Started </a>
 </button>
-<table>
-  <tr>
-    <th>campus</th>
-    <th>Room Number</th>
-    <th>Report</th>
-  </tr>
-    {% for report in reports %}
-  <tr>
-    <td>{{report[1]}}</td>
-    <td>{{report[3]}}</td>
-    <td>{{report[4]}}</td>
-    <td><a href="">use</a></td>
-  </tr>
-    {%endfor%}
-</table>
+
 {%endblock%}
