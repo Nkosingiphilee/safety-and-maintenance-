@@ -15,7 +15,7 @@
 					      <th>Block</th>
 					      <th>Room_no</th>
 					      <th>Report</th>
-					      <th>Status</th>
+					      <th></th>
 					    </tr>
 					  </thead>
 					  <tbody>
@@ -25,9 +25,8 @@
 					      <td>{{report[2].upper()}}</td>
 					      <td>{{report[3]}}</td>
 					      <td>{{report[4]}}</td>
-					      <td><a href="#" class="btn btn-success">Progress</a></td>
+					      <td><a href="{{url_for('detailed',report_id=report[0])}}" class="btn btn-success">Detailed</a></td>
 					    </tr>
-					  {{report[6]}}
 					  {%endfor%}
 					  </tbody>
 					</table>
