@@ -3,9 +3,10 @@ import datetime
 import flask_login
 from flask import Flask, render_template, request, redirect, flash, url_for, session
 import sqlite3
+import string
 from werkzeug.utils import secure_filename
 from datetime import datetime
-from flask_login import UserMixin, login_required
+from flask_login import UserMixin, login_required, current_user
 
 from forms import Register, Login
 
@@ -102,6 +103,8 @@ def contact():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('reported'))
     form = Register()
     if form.validate_on_submit():
         with sqlite3.connect('maintenance.db') as db:
@@ -168,7 +171,7 @@ def report_form():
             cur = db.cursor()
             cur.execute("""INSERT INTO report(campus,Block,room_no,Report,Description,Date,Image) VALUES(?,?,?,?,?,?,?) 
             """, (request.form['campus'], request.form['block'], request.form['room'], request.form['report'],
-                  request.form['description'],datetime.utcnow() ,image.filename))
+                  request.form['description'], datetime.utcnow(), image.filename))
             db.commit()
         flash("report submitted")
         return redirect(url_for('report'))
@@ -180,9 +183,19 @@ def report_form():
 def reported():
     with sqlite3.connect('maintenance.db') as db:
         cur = db.cursor()
-        cur.execute("""SELECT * FROM report""")
+        cur.execute("""SELECT * FROM report ORDER BY report_id  DESC""")
     reports = cur.fetchall()
     return render_template('reported.html', reports=reports)
+
+
+@app.route('/detailed/<int:report_id>')
+@login_required
+def detailed(report_id):
+    with sqlite3.connect('maintenance.db') as db:
+        cur = db.cursor()
+        id = int(report_id)
+        cur.execute("""SELECT * FROM report WHERE report_id=%d""" % int(id))
+    return render_template('detailed.html', reports=cur.fetchone())
 
 
 if __name__ == '__main__':
