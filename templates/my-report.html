@@ -1,0 +1,38 @@
+{% extends 'layout.html'%}
+{%block content %}
+<section class="ftco-section">
+	<div class="container">
+		<div class="row justify-content-center">
+
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="table-wrap">
+					<table class="table table-striped">
+					  <thead>
+					    <tr>
+					      <th>campus</th>
+					      <th>Block</th>
+					      <th>Room_no</th>
+					      <th>Report</th>
+					      <th></th>
+					    </tr>
+					  </thead>
+					  <tbody>
+					  {%for report in reports%}
+					    <tr>
+					      <td>{{report[1].upper()}}</td>
+					      <td>{{report[2].upper()}}</td>
+					      <td>{{report[3]}}</td>
+					      <td>{{report[4]}}</td>
+					      <td><a href="{{url_for('detailed',report_id=report[0])}}" class="btn btn-success">Detailed</a></td>
+					    </tr>
+					  {%endfor%}
+					  </tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{%endblock%}
