@@ -17,13 +17,21 @@
         <nav>
             <ul>
                 <li><a href="{{url_for('index')}}">Home</a></li>
+                {%if current_user.is_admin%}
                 <li><a href="{{url_for('reported')}}">reported</a></li>
+
+                {%endif%}
                 <li><a href="{{url_for('report')}}">report</a></li>
+
                 {%if current_user.is_authenticated%}
+                <li><a href="{{url_for('my_report')}}">My report</a></li>
                 <li><a href="{{url_for('logout')}}">Logout</a></li>
                 {%else%}
                 <li><a href="{{url_for('login')}}">Login</a></li>
                 <li><a href="{{url_for('register')}}">Register</a></li>
+                {%endif%}
+                {%if current_user.is_admin%}
+                <li>logged as admin</li>
                 {%endif%}
             </ul>
         </nav>
