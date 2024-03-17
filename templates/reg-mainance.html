@@ -1,20 +1,20 @@
 {%extends 'layout.html'%}
 {% block content%}
  <section id="register" class="forms">
-        <h2>Register Student</h2>
-        <form action="{{url_for('register')}}" method="POST">
+        <h2>Register Maintenance</h2>
+        <form action="{{url_for('register_maintenance')}}" method="POST">
             {{ form.hidden_tag() }}
             {{form.id_number.label}}
             {{form.id_number()}}
             <br>
-            {{form.stud_name.label}}
-            {{form.stud_name()}}
+            {{form.main_name.label}}
+            {{form.main_name()}}
             <br>
-            {{form.stud_surname.label}}
-            {{form.stud_surname()}}
+            {{form.main_type.label}}
+            {{form.main_type()}}
             <br>
-            {{form.email.label}}
-            {{form.email()}}
+            {{form.main_email.label}}
+            {{form.main_email()}}
             <br>
             {{form.phone_number.label}}
             {{form.phone_number()}}
@@ -22,10 +22,7 @@
             {{form.password.label}}
             {{form.password()}}
             <br>
-            <div>{{form.admin.label}}{{form.admin()}}</div>
-
-            <br>
-            {{form.submit(class="btn btn-success") }}
+            {{ form.submit(class="btn btn-success") }}
         </form>
     </section>
 {%endblock%}

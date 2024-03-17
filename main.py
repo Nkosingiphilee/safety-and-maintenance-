@@ -8,7 +8,7 @@ from datetime import datetime
 from flask_login import UserMixin, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from forms import Register, Login
+from forms import Register, Login, Maintenance
 
 with sqlite3.connect('maintenance.db') as db:
     curse = db.cursor()
@@ -37,6 +37,19 @@ with sqlite3.connect('maintenance.db') as db:
         Date datetime DEFAULT utcnow,
         Image TEXT ,
         user_id Integer
+        )
+        """)
+
+with sqlite3.connect('maintenance.db') as db:
+    curse = db.cursor()
+    curse.execute("""CREATE TABLE IF NOT EXISTS maintenee(
+        main_id Integer PRIMARY KEY AUTOINCREMENT,
+        main_no VARCHAR(10),
+        main_name TEXT NOT NULL,
+        main_type TEXT NOT NULL,
+        main_email VARCHAR(50) NOT NULL,
+        password VARCHAR(50),
+        phone_number TEXT 
         )
         """)
 
@@ -95,21 +108,6 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-
-@app.route('/service')
-def service():
-    return render_template('service.html')
-
-
-@app.route('/contact')
-def contact():
-    return render_template('contact.html')
-
-
 # register users to the database
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -119,12 +117,12 @@ def register():
     if form.validate_on_submit():
         with sqlite3.connect('maintenance.db') as db:
             cur = db.cursor()
-            cur.execute("""INSERT INTO register(student_no,stud_name,stud_surname,email,password,phone_number) VALUES(?,?,?,?,?,?) 
+            cur.execute("""INSERT INTO register(student_no,stud_name,stud_surname,email,password,phone_number,is_admin) VALUES(?,?,?,?,?,?,?) 
             """, (
-                form.student_no.data, form.stud_name.data, form.stud_surname.data, form.email.data,
-                generate_password_hash(form.password.data), form.phone_number.data))
+                form.id_number.data, form.stud_name.data, form.stud_surname.data, form.email.data,
+                generate_password_hash(form.password.data), form.phone_number.data,form.admin.data))
             db.commit()
-        flash("%s has been registered" % form.stud_name.data, 'successful ')
+        flash("%s registration Successful" % form.stud_name.data, 'successful ')
         return redirect(url_for('index'))
     return render_template('register.html', form=form)
 
@@ -140,12 +138,12 @@ def login():
     if form.validate_on_submit():
         db = sqlite3.connect('maintenance.db')
         cur = db.cursor()
-        num = str(form.student_no.data)
+        num = str(form.id_number.data)
         cur.execute("""SELECT * FROM register WHERE student_no=%s""" % num)
         user = cur.fetchone()
         if user is None:
             return redirect(url_for('index'))
-        if user[1] == form.student_no.data and check_password_hash(user[5], form.password.data):
+        if user[1] == form.id_number.data and check_password_hash(user[5], form.password.data):
             Us = user_loader(user[0])
             flask_login.login_user(Us)
             flash("%s" % str(user[2]), 'successful ')
@@ -226,5 +224,31 @@ def my_report():
     return render_template('reported.html', reports=cur.fetchall())
 
 
+@app.route('/reg-maintenance', methods=['GET', 'POST'])
+def register_maintenance():
+    form = Maintenance()
+    if form.validate_on_submit():
+        with sqlite3.connect('maintenance.db') as db:
+            cur = db.cursor()
+            cur.execute("""INSERT INTO maintenee(main_no,main_name,main_type,main_email,password,phone_number) VALUES(?,?,?,?,?,?) 
+            """, (
+                form.id_number.data, form.main_name.data, form.main_type.data, form.main_email.data,
+                generate_password_hash(form.password.data), form.phone_number.data))
+            db.commit()
+        flash("%s  registration succession" % form.main_name.data, 'successful ')
+    return render_template('reg-mainance.html', form=form)
+
+
+@app.route('/assign/<int:id>')
+def assign(id):
+    with sqlite3.connect('maintenance.db') as db:
+        cur = db.cursor()
+        cur.execute("""SELECT * FROM maintenee""")
+        maintain = cur.fetchall()
+        cur.execute("""SELECT * FROM report WHERE report_id=?""", (id,))
+        report = cur.fetchone()
+    return render_template('assign.html', maintain=maintain, report=report)
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

@@ -1,0 +1,23 @@
+{%extends 'layout.html'%}
+{% block content%}
+<section class="forms">
+        <form>
+            <table>
+                <td>{{report[4]}}</td>
+                <td>{{report[5]}} </td>
+                <td>
+                    <label for="personnel">Assign To:</label>
+                  <select id="personnel" name="personnel" required>
+                <option value="" disabled selected>Select Personnel</option>
+                {%for maint in maintain%}
+                <option value="{{maint[1]}}">{{maint[2],maint[3]}}</option>
+                {%endfor%}
+                <!-- Add more personnel as needed -->
+            </select><br><br>
+
+                </td>
+                <td> <button type="submit">Assign Issue</button></td>
+            </table>
+        </form>
+    </section>
+{% endblock %}
