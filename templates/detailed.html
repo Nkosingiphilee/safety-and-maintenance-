@@ -1,10 +1,10 @@
 {%extends 'layout.html'%}
 {% block content%}
- <ul>
+ <li>
      <dl>{{reports[1]}}</dl>
      <dl>{{reports[2]}}</dl>
      <dl>{{reports[5]}}</dl>
-     <img src="/Images/{{reports[7]}}">
- </ul>
+     <img src="{{url_for('static',filename='Images/'+reports[-2])}}">
+ </li>
 
 {%endblock%}

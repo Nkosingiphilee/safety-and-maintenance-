@@ -26,6 +26,11 @@
 					      <td>{{report[3]}}</td>
 					      <td>{{report[4]}}</td>
 					      <td><a href="{{url_for('detailed',report_id=report[0])}}" class="btn btn-success">Detailed</a></td>
+							<td>
+							{%if current_user.is_admin%}
+							 <td><a href="{{url_for('assign',id=report[0])}}" class="btn btn-success">assign</a></td>
+							{%endif%}
+							</td>
 					    </tr>
 					  {%endfor%}
 					  </tbody>
